@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ import java.io.IOException;
 
 @EnableWebSecurity
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final UserAuthentication userAuthentication;
@@ -33,6 +35,7 @@ public class SecurityConfig {
         System.out.println("Hello");
         return http.authorizeHttpRequests(auth -> {
             auth.requestMatchers("/").permitAll();
+            auth.requestMatchers("/admin").hasRole("ADMIN");
             auth.anyRequest().authenticated();
         })  .oauth2Login(oauth2Login -> {
                     oauth2Login.successHandler(userAuthentication);

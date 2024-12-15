@@ -16,6 +16,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "role")
+    private String role;
+
 
     @Column(name = "googleid")
     private String googleId;
@@ -46,6 +49,13 @@ public class User {
 
     public String getGoogleId() {
         return googleId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void setGoogleId(String googleId) {
