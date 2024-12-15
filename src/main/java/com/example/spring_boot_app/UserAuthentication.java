@@ -3,23 +3,33 @@ package com.example.spring_boot_app;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
+
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-@Component
+@Service
 public class UserAuthentication extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Autowired
-    private UserRepository userRepository;
+
+    private final UserRepository userRepository;
+
+
+    public UserAuthentication(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
+
+        System.out.println("Hello 2");
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String googleId = oAuth2User.getAttribute("sub");
@@ -35,6 +45,6 @@ public class UserAuthentication extends SimpleUrlAuthenticationSuccessHandler {
             return userRepository.save(user);
         });
 
-        super.onAuthenticationSuccess(request, response, authentication);
+        response.sendRedirect("/dashboard");
     }
 }
