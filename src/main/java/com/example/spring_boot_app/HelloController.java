@@ -13,10 +13,12 @@ import java.util.Map;
 @RestController
 public class HelloController {
 
+    /*
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/hello")
     public String sayHello() {
-        return "Hello World";
+        return "Hello World from Spring Boot";
+
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -31,5 +33,7 @@ public class HelloController {
 
         return principal;
     }
+    */
+
 
 }

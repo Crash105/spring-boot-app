@@ -20,7 +20,7 @@ public class User {
     private String role;
 
 
-    @Column(name = "googleid")
+    @Column(name = "google_id")
     private String googleId;
 
     public Long getId() {
