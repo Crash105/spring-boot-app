@@ -32,10 +32,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        System.out.println("Hello");
+
         return http.authorizeHttpRequests(auth -> {
             auth.requestMatchers("/").permitAll();
-            auth.requestMatchers("/admin").hasRole("ADMIN");
+            auth.requestMatchers("/admin/**").hasRole("ADMIN");
             auth.anyRequest().authenticated();
         })  .oauth2Login(oauth2Login -> {
                     oauth2Login.successHandler(userAuthentication);

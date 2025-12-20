@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investment Companies</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 10px;
+    }
+    .companies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .company-card {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .company-card h3 {
+      color: #4CAF50;
+      margin-top: 0;
+    }
+    .company-card .industry {
+      color: #666;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .company-card .description {
+      color: #555;
+      line-height: 1.6;
+    }
+    .back-button {
+      background-color: #2196F3;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .back-button:hover {
+      background-color: #1976D2;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🏢 Investment Companies</h1>
+  
+  <div class="companies-grid" th:if="${companies != null and !companies.isEmpty()}">
+    <div class="company-card" th:each="company : ${companies}">
+      <h3 th:text="${company.name}">Company Name</h3>
+      <div class="industry" th:text="'Industry: ' + ${company.industry}">Industry</div>
+      <div class="description" th:text="${company.description}">Description</div>
+    </div>
+  </div>
+  
+  <div th:if="${companies == null or companies.isEmpty()}">
+    <p>No companies available at this time.</p>
+  </div>
+  
+  <a href="/dashboard" class="back-button">Back to Dashboard</a>
+</div>
+</body>
+</html>
