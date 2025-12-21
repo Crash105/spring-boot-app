@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" th:inline="javascript">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Admin Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        .admin-info {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .role-badge {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .role-admin {
+            background-color: #ff9800;
+            color: white;
+        }
+        .role-user {
+            background-color: #2196F3;
+            color: white;
+        }
+        .action-button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .promote-btn {
+            background-color: #ff9800;
+            color: white;
+        }
+        .demote-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+        .back-button {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="admin-container">
+    <h1>🔐 Admin Dashboard</h1>
+
+    <div class="admin-info">
+        <p><strong>Admin:</strong> <span th:text="${name}">Admin Name</span></p>
+        <p><strong>Email:</strong> <span th:text="${email}">admin@example.com</span></p>
+    </div>
+
+    <h2>👥 All Users</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Balance</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}">User ID: </td>
+            <td th:text="${user.name}">Name: </td>
+            <td th:text="${user.email}">Email: </td>
+            <td th:text="${balances[user.id]}">Balance: </td>
+            <td>
+            <span class="role-badge"
+                  th:classappend="${user.role == 'ADMIN'} ? ' role-admin' : ' role-user'"
+                  th:text="${'ROLE_' + user.role}">
+            </span>
+            </td>
+
+            <td>
+                <button th:onclick="'openAdjustModal(' + ${user.id} + ')'">Adjust Balance</button>
+
+            </td>
+
+
+
+        </tr>
+        </tbody>
+    </table>
+
+
+
+    <div style="margin-top: 30px;">
+        <a href="/dashboard" class="back-button">Back to Dashboard</a>
+    </div>
+    <script th:inline="javascript">
+        const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+        const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+        let selectedUserId = null;
+
+        function openAdjustModal(userId) {
+            selectedUserId = userId;
+            console.log("Selected user:", selectedUserId);
+            document.getElementById("adjustModal").style.display = "flex";
+        }
+
+        function closeAdjustModal() {
+            document.getElementById("adjustModal").style.display = "none";
+        }
+
+        function submitAdjust() {
+            const amount = document.getElementById("modalAmount").value;
+            const type = document.querySelector('input[name="adjustType"]:checked').value;
+
+            fetch("/transaction", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({
+                    userId: selectedUserId,
+                    amount: amount,
+                    type: type
+                })
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Failed to submit");
+                    return res.text();
+                })
+                .then(() => {
+                    alert("Transaction added!");
+
+                })
+                .catch(err => alert(err));
+
+            closeAdjustModal();
+        }
+    </script>
+
+
+
+
+
+
+    <!-- Modal Background -->
+    <div id="adjustModal" class="modal-bg" style="
+    display:none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;">
+
+        <div class="modal" style="
+        background:white;
+        padding:20px;
+        border-radius:8px;
+        width:300px;
+        box-shadow:0 4px 8px rgba(0,0,0,0.2);">
+
+            <h3>Adjust Balance</h3>
+
+            <label>Amount:</label>
+            <input id="modalAmount" type="number" min="1" step="1"
+                   style="width:100%;margin-bottom:10px;padding:6px;">
+
+            <label>Type:</label>
+            <div>
+                <label><input type="radio" name="adjustType" value="add" checked> Add</label>
+                <label><input type="radio" name="adjustType" value="subtract"> Subtract</label>
+            </div>
+
+            <div style="margin-top:15px; display:flex; justify-content:space-between;">
+                <button onclick="closeAdjustModal()"
+                        style="background:#999;color:white;padding:8px 12px;border:none;border-radius:5px;">
+                    Cancel
+                </button>
+
+                <button onclick="submitAdjust()"
+                        style="background:#4CAF50;color:white;padding:8px 12px;border:none;border-radius:5px;">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

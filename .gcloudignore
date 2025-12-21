@@ -1,0 +1,8 @@
+# Ignore nothing by default
+**
+
+# Re-include everything
+!**
+
+# Explicitly include the jar
+!target/*.jar
