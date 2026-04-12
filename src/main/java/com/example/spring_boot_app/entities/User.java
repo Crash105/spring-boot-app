@@ -1,9 +1,9 @@
-package com.example.spring_boot_app;
+package com.example.spring_boot_app.entities;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "google_authentication")
+@Table(name = "users")
 public class User {
 
     @Id

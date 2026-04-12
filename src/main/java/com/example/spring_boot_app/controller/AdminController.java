@@ -1,5 +1,8 @@
-package com.example.spring_boot_app;
+package com.example.spring_boot_app.controller;
 
+import com.example.spring_boot_app.TransactionService;
+import com.example.spring_boot_app.repository.UserRepository;
+import com.example.spring_boot_app.entities.User;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

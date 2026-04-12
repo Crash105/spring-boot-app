@@ -1,4 +1,4 @@
-package com.example.spring_boot_app;
+package com.example.spring_boot_app.entities;
 
 import jakarta.persistence.*;
 
@@ -26,13 +26,24 @@ public class Transaction {
     @Column(name = "user_id")
     private Long userId;
 
+    @Column(name = "performed_by")
+    private Long performed_by;
 
+    
     public void setUserId(Long userId) {
         this.userId = userId;
     }
 
     public Long getUserId() {
         return userId;
+    }
+
+    public void setPerformed_by(Long performed_by) {
+
+        this.performed_by = performed_by;
+    }
+    public Long getPerformed_by() {
+        return performed_by;
     }
 
     public void setAmount(Integer amount) {
@@ -50,13 +61,16 @@ public class Transaction {
     public LocalDateTime getTransaction_time() {
         return transaction_time;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
+
     public String getDescription() {
         return description;
 
     }
+
 
 }
 // Getters and setters

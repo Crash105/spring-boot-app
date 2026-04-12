@@ -1,7 +1,11 @@
-package com.example.spring_boot_app;
+package com.example.spring_boot_app.controller;
 
+import com.example.spring_boot_app.*;
+import com.example.spring_boot_app.entities.Transaction;
+import com.example.spring_boot_app.entities.User;
+import com.example.spring_boot_app.repository.TransactionRepository;
+import com.example.spring_boot_app.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -73,11 +76,14 @@ public class ViewController {
         User user = userRepository.findByGoogleId(googleId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+
+
         // Save transaction
         Transaction newTransaction = new Transaction();
         newTransaction.setAmount(amount);
         newTransaction.setDescription(type);
         newTransaction.setUserId(user.getId());
+        newTransaction.setPerformed_by(user.getId());
         transactionRepository.save(newTransaction);
         transactionService.clearUserBalanceCache(user.getId());
 
@@ -85,16 +91,24 @@ public class ViewController {
 
     }
     @PostMapping(value = "/transaction", consumes = "application/json")
-    public ResponseEntity<?> handleAdminTransaction(@RequestBody Map<String, Object> json) {
+    public ResponseEntity<?> handleAdminTransaction(OAuth2AuthenticationToken token, @RequestBody Map<String, Object> json) {
 
         Long userId = Long.valueOf(json.get("userId").toString());
         Integer amount = Integer.valueOf(json.get("amount").toString());
         String type = json.get("type").toString();
 
+        String googleId = token.getPrincipal().getAttribute("sub");
+
+        // But in YOUR database, user_id references google_authentication.id (BIGINT)
+        User user = userRepository.findByGoogleId(googleId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         Transaction newTransaction = new Transaction();
         newTransaction.setAmount(amount);
         newTransaction.setDescription(type);
         newTransaction.setUserId(userId);
+        newTransaction.setPerformed_by(user.getId());
+
         transactionRepository.save(newTransaction);
         transactionService.clearUserBalanceCache(userId);
 

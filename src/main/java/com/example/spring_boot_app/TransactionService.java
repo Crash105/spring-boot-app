@@ -1,6 +1,8 @@
 package com.example.spring_boot_app;
 
 
+import com.example.spring_boot_app.entities.Transaction;
+import com.example.spring_boot_app.repository.TransactionRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

@@ -35,4 +35,5 @@ build/
 # Maven / Gradle build output
 target/
 *.jar
+application.properties
 

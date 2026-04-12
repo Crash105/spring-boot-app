@@ -1,5 +1,6 @@
-package com.example.spring_boot_app;
+package com.example.spring_boot_app.repository;
 
+import com.example.spring_boot_app.entities.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
